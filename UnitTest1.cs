@@ -6,7 +6,7 @@ using Xunit;
 
 namespace dotnet_cert
 {
-    public class UnitTest1
+    public class UnitTestA
     {
         [Fact]
         public async Task Test_Multiple_Certificates()
@@ -17,45 +17,107 @@ namespace dotnet_cert
             {
                 for (int i = 1; i <= 100; i++)
                 {
-                    tasks.Add(Test(i));
+                    tasks.Add(UnitTest.Test(i));
                 }
 
                 await Task.WhenAll(tasks);
             }
         }
+    }
 
-        [Theory]
-        [InlineData(1)]
-        [InlineData(2)]
-        [InlineData(3)]
-        [InlineData(4)]
-        [InlineData(5)]
-        [InlineData(6)]
-        [InlineData(7)]
-        [InlineData(8)]
-        [InlineData(9)]
-        [InlineData(10)]
-        public async Task Test_Same_Certificate(int certificateId)
+    internal static class UnitTest
+    {
+        public static async Task Test(int certificateId, int count = 1)
         {
-            Collection<Task> tasks = new Collection<Task>();
-
-            for (int i = 1; i <= 1000; i++)
+            for (int i = 0; i < count; i++)
             {
-                tasks.Add(Test(certificateId));
+                using (X509Certificate2 certificate = new X509Certificate2($"certificate_{certificateId}.pfx", "secure"))
+                using (var privateKey = certificate.GetRSAPrivateKey())
+                {
+                    await Task.Delay(TimeSpan.FromMilliseconds(5));
+                }
             }
-
-            await Task.WhenAll(tasks);
         }
+    }
 
-        private async Task Test(int i)
+    public class UnitTest1
+    {
+        [Fact]
+        public Task Test_Same_Certificate()
         {
-            await Task.Yield();
+            return UnitTest.Test(1, 1000);
+        }
+    }
 
-            using (X509Certificate2 certificate = new X509Certificate2($"certificate_{i}.pfx", "secure"))
-            using (var privateKey = certificate.GetRSAPrivateKey())
-            {
-                await Task.Delay(TimeSpan.FromMilliseconds(100));
-            }
+    public class UnitTest2
+    {
+        [Fact]
+        public Task Test_Same_Certificate()
+        {
+            return UnitTest.Test(2, 1000);
+        }
+    }
+
+    public class UnitTest3
+    {
+        [Fact]
+        public Task Test_Same_Certificate()
+        {
+            return UnitTest.Test(3, 1000);
+        }
+    }
+
+    public class UnitTest4
+    {
+        [Fact]
+        public Task Test_Same_Certificate()
+        {
+            return UnitTest.Test(4, 1000);
+        }
+    }
+
+    public class UnitTest5
+    {
+        [Fact]
+        public Task Test_Same_Certificate()
+        {
+            return UnitTest.Test(5, 1000);
+        }
+    }
+
+    public class UnitTest6
+    {
+        [Fact]
+        public Task Test_Same_Certificate()
+        {
+            return UnitTest.Test(6, 1000);
+        }
+    }
+
+    public class UnitTest7
+    {
+        [Fact]
+        public Task Test_Same_Certificate()
+        {
+            return UnitTest.Test(7, 1000);
+        }
+    }
+
+    public class UnitTest8
+    {
+        [Fact]
+        public Task Test_Same_Certificate()
+        {
+            return UnitTest.Test(8, 1000);
+        }
+    }
+
+    public class UnitTest9
+    {
+        [Fact]
+        public Task Test_Same_Certificate()
+        {
+            return UnitTest.Test(9, 1000);
         }
     }
 }
