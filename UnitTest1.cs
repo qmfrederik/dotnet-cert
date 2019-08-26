@@ -1,3 +1,4 @@
+using System;
 using System.Collections.ObjectModel;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
@@ -12,7 +13,7 @@ namespace dotnet_cert
         {
             Collection<Task> tasks = new Collection<Task>();
 
-            for (int i = 1; i <= 100; i++)
+            for (int i = 1; i <= 1000; i++)
             {
                 tasks.Add(Test(i));
             }
@@ -35,7 +36,7 @@ namespace dotnet_cert
         {
             Collection<Task> tasks = new Collection<Task>();
 
-            for (int i = 1; i <= 100; i++)
+            for (int i = 1; i <= 1000; i++)
             {
                 tasks.Add(Test(certificateId));
             }
@@ -47,11 +48,11 @@ namespace dotnet_cert
         {
             await Task.Yield();
 
-            X509Certificate2 certificate = new X509Certificate2($"certificate_{i}.pfx", "secure");
-            Assert.NotNull(certificate);
-
-            var privateKey = certificate.GetRSAPrivateKey();
-            Assert.NotNull(privateKey);
+            using (X509Certificate2 certificate = new X509Certificate2($"certificate_{i}.pfx", "secure"))
+            using (var privateKey = certificate.GetRSAPrivateKey())
+            {
+                await Task.Delay(TimeSpan.FromMilliseconds(100));
+            }
         }
     }
 }
