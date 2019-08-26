@@ -31,7 +31,7 @@ namespace dotnet_cert
         {
             for (int i = 0; i < count; i++)
             {
-                using (X509Certificate2 certificate = new X509Certificate2($"certificate_{certificateId}.pfx", "secure"))
+                using (X509Certificate2 certificate = new X509Certificate2($"certificate_{certificateId}.pfx", "secure", X509KeyStorageFlags.Exportable | X509KeyStorageFlags.UserKeySet))
                 using (var privateKey = certificate.GetRSAPrivateKey())
                 {
                     var parameters = privateKey.ExportParameters(includePrivateParameters: true);
