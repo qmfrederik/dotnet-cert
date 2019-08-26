@@ -13,12 +13,15 @@ namespace dotnet_cert
         {
             Collection<Task> tasks = new Collection<Task>();
 
-            for (int i = 1; i <= 1000; i++)
+            for (int j = 0; j < 10; j++)
             {
-                tasks.Add(Test(i));
-            }
+                for (int i = 1; i <= 100; i++)
+                {
+                    tasks.Add(Test(i));
+                }
 
-            await Task.WhenAll(tasks);
+                await Task.WhenAll(tasks);
+            }
         }
 
         [Theory]
