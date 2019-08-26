@@ -34,6 +34,7 @@ namespace dotnet_cert
                 using (X509Certificate2 certificate = new X509Certificate2($"certificate_{certificateId}.pfx", "secure"))
                 using (var privateKey = certificate.GetRSAPrivateKey())
                 {
+                    var parameters = privateKey.ExportParameters(includePrivateParameters: true);
                     await Task.Delay(TimeSpan.FromMilliseconds(5));
                 }
             }
