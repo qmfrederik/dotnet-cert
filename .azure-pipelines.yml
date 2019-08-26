@@ -1,0 +1,11 @@
+stages:
+- stage: Build
+  jobs:
+  - job: windows
+    pool:
+      vmImage: windows-2019
+    container: quamotion/build-agent-windows:605
+    steps:
+    - script: |
+        dotnet test -c Release
+      displayName: Build
