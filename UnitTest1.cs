@@ -1,5 +1,6 @@
 using System;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using Xunit;
@@ -31,7 +32,9 @@ namespace dotnet_cert
         {
             for (int i = 0; i < count; i++)
             {
-                using (X509Certificate2 certificate = new X509Certificate2($"certificate_{certificateId}.pfx", "secure", X509KeyStorageFlags.Exportable | X509KeyStorageFlags.UserKeySet))
+                byte[] data = File.ReadAllBytes($"certificate_{certificateId}.pfx");
+
+                using (X509Certificate2 certificate = new X509Certificate2(data, "secure", X509KeyStorageFlags.Exportable | X509KeyStorageFlags.Exportable))
                 using (var privateKey = certificate.GetRSAPrivateKey())
                 {
                     var parameters = privateKey.ExportParameters(includePrivateParameters: true);
