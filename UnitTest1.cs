@@ -37,8 +37,14 @@ namespace dotnet_cert
                 using (X509Certificate2 certificate = new X509Certificate2(data, "secure", X509KeyStorageFlags.Exportable | X509KeyStorageFlags.Exportable))
                 using (var privateKey = certificate.GetRSAPrivateKey())
                 {
+                    certificate.Dispose();
+
                     var parameters = privateKey.ExportParameters(includePrivateParameters: true);
-                    await Task.Delay(TimeSpan.FromMilliseconds(5));
+                    var parameters2 = privateKey.ExportParameters(includePrivateParameters: true);
+                    var parameters3 = privateKey.ExportParameters(includePrivateParameters: true);
+
+                    Assert.Equal(parameters.D, parameters2.D);
+                    Assert.Equal(parameters.D, parameters3.D);
                 }
             }
         }
