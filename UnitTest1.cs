@@ -14,11 +14,11 @@ namespace dotnet_cert
         {
             Collection<Task> tasks = new Collection<Task>();
 
-            for (int j = 0; j < 10; j++)
+            for (int j = 0; j < 100; j++)
             {
-                for (int i = 1; i <= 100; i++)
+                for (int i = 1; i <= 1000; i++)
                 {
-                    tasks.Add(UnitTest.Test(i));
+                    tasks.Add(UnitTest.Test(i, count: 1, accessCount: 50));
                 }
 
                 await Task.WhenAll(tasks);
@@ -28,8 +28,10 @@ namespace dotnet_cert
 
     internal static class UnitTest
     {
-        public static async Task Test(int certificateId, int count = 1)
+        public static async Task Test(int certificateId, int count = 1, int accessCount = 100)
         {
+            await Task.Yield();
+
             for (int i = 0; i < count; i++)
             {
                 byte[] data = File.ReadAllBytes($"certificate_{certificateId}.pfx");
@@ -38,13 +40,21 @@ namespace dotnet_cert
                 using (var privateKey = certificate.GetRSAPrivateKey())
                 {
                     certificate.Dispose();
+                    GC.Collect();
 
-                    var parameters = privateKey.ExportParameters(includePrivateParameters: true);
-                    var parameters2 = privateKey.ExportParameters(includePrivateParameters: true);
-                    var parameters3 = privateKey.ExportParameters(includePrivateParameters: true);
+                    for (int j = 0; j < accessCount; j++)
+                    {
+                        var parameters = privateKey.ExportParameters(includePrivateParameters: true);
+                        var parameters2 = privateKey.ExportParameters(includePrivateParameters: true);
 
-                    Assert.Equal(parameters.D, parameters2.D);
-                    Assert.Equal(parameters.D, parameters3.D);
+                        GC.Collect();
+
+                        privateKey.Dispose();
+                        var parameters3 = privateKey.ExportParameters(includePrivateParameters: true);
+
+                        Assert.Equal(parameters.D, parameters2.D);
+                        // Assert.Equal(parameters.D, parameters3.D);
+                    }
                 }
             }
         }
